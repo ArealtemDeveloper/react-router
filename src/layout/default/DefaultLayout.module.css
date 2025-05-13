@@ -1,0 +1,39 @@
+.container {
+    position: relative;
+}
+
+.wrapper {
+    height: 100vh;
+    margin: 80px 20px;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #FAE48BFF;
+    padding: 20px 40px;
+}
+
+.link {
+    padding: 10px;
+    text-decoration: none;
+    background-color: #FAFD7CFF;
+    border-radius: 5px;
+    transition: backround-color .3s ease;
+}
+
+.link:hover {
+    background-color: rgb(251, 255, 0);
+}
+
+.link.active {
+    pointer-events: none;
+}
+
+.list {    
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    list-style: none;
+}

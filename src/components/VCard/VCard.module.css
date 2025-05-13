@@ -1,0 +1,34 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 200px;
+    max-width: 300px;
+    padding: 20px;
+    background-color: #E89242FF;
+    color: #fff;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color .3s ease;
+}
+
+.container:hover {
+    background-color: #F7A152;
+}
+
+.image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.text {
+    text-align: center;
+    height: 100%;
+    width: 100%;
+}
+
+.name {
+    font-size: 22px;
+}
