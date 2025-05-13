@@ -1,7 +1,7 @@
 import { ICategoryType } from '../../types/constants'
 import styles from './VCard.module.css'
 
-import { NavLink } from 'react-router'
+import { NavLink } from 'react-router-dom'
 
 interface ICardProps {
     type: ICategoryType,

@@ -10,6 +10,10 @@
 .header {
     position: fixed;
     top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 75px;
     width: 100%;
     background-color: #FAE48BFF;
     padding: 20px 40px;
@@ -29,6 +33,24 @@
 
 .link.active {
     pointer-events: none;
+}
+
+.user {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.btn {
+    font-size: 14px;
+    background-color: #fff;
+    color: black;
+    border: none;
+}
+
+.logout {
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
 .list {    
