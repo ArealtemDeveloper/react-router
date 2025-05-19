@@ -1,0 +1,13 @@
+.list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background-color: #E89242FF;
+    color: black;
+    padding: 20px;
+}
+
+.row {
+    font-size: 18px;
+}
