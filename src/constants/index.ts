@@ -24,6 +24,7 @@ export const INITIAL_ROUTES = {
     main: '/',
     category: '/category/:slug',
     detail: '/category/:slug/:id',
+    login: '/login',
     notFound: '*',
 };
 
