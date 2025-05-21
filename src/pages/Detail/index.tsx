@@ -1,47 +1,54 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { useFetch } from "../../hooks/useFetch";
 
-import { CATEGORIES_DATA } from "../../data";
+import { BASE_FETCH_URL } from "../../constants";
 import { DICTIONARY } from "../../constants";
 
 import styles from './DetailPage.module.css'
 
-const EXCEPTION_FIELDS = ['image', 'id'];
+import VLoader from "../../components/VLoader/VLoader";
 
+const EXCEPTION_FIELDS = ['image', 'id', 'residents', 'characters', 'episode', 'location', 'origin', 'url'];
 
 function DetailPage() {
   const { slug, id } = useParams();
 
-  const [data, setData] = useState<string[]>([]);
+  const {    
+    data,
+    isLoading,
+  } = useFetch(`${BASE_FETCH_URL}/${slug}/${id}`, false);
+
+  const [formattedData, setFormattedData] = useState<string[]>([]);
 
   useEffect(() => {
-    if (slug) {
-      const info = CATEGORIES_DATA[slug].info.find(item => String(item.id) === id);
-
-      if (info) {
+    if (slug && data) {
         const arr = [];
 
-        for (const [key, value] of Object.entries(info)) {
-          if (!EXCEPTION_FIELDS.includes(key) && value) {
+        for (const [key, value] of Object.entries(data)) {
+          if (!EXCEPTION_FIELDS.includes(key) && value && DICTIONARY[key]) {
             arr.push(`${DICTIONARY[key]}: ${value}`);
           }
         };
 
-        setData(arr);
-      }
+        setFormattedData(arr);
     }
-  }, [slug, id])
+  }, [data, slug, id])
 
   return (
     <ul className={styles.list}>
-        {data.map(item => (
-          <li 
-            className={styles.row}
-            key={item}
-          >
-            {item}
-          </li>
-        ))}
+      {
+      isLoading 
+        ?  <VLoader/> 
+        :  formattedData.map(item => (
+            <li 
+              className={styles.row}
+              key={item}
+            >
+              {item}
+            </li>
+          ))
+      }
     </ul>
   )
 }
