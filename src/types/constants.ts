@@ -1,12 +1,13 @@
 export interface IRouteSlugs {[key: string]: string};
 
-export type ICategoryType = 'heros' | 'episodes' | 'locations';
-
-export interface ICategoryItem  {
-    info: { [key: string]: any }[];
-    type: ICategoryType;
+export interface ICategory {
+    info: {[key: string]: any};
+    results: { [key: string]: any }[];
 };
 
+export interface IDetailCard {
+    data: { [key: string]: any };
+};
 export interface IRoute {
     id: number,
     path: string,

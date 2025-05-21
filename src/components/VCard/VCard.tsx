@@ -1,15 +1,11 @@
-import { ICategoryType } from '../../types/constants'
 import styles from './VCard.module.css'
 
 import { NavLink } from 'react-router-dom'
-
 interface ICardProps {
-    type: ICategoryType,
     data: {[key: string]: string},
 }
 
-
-function VCard({ type, data }: ICardProps) {
+function VCard({ data }: ICardProps) {
   return (
     <NavLink
         to={String(data.id)} 

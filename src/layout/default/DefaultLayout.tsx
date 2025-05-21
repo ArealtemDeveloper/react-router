@@ -1,10 +1,14 @@
+import { Suspense } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { ROUTES, INITIAL_ROUTES } from '../../constants';
 
 import styles from './DefaultLayout.module.css'
+import cn from 'classnames';
+
 import { useAuth } from '../../context/AuthProvider';
 
-import cn from 'classnames';
+import VLoader from '../../components/VLoader/VLoader';
+
 
 function DefaultLayout() {
   const navigate = useNavigate();
@@ -57,7 +61,9 @@ function DefaultLayout() {
       </header>
 
       <div className={styles.wrapper}>
-        <Outlet/>
+        <Suspense fallback={<VLoader/>}>
+          <Outlet/>
+        </Suspense>
       </div>
     </div>
 

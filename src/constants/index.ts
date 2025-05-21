@@ -1,6 +1,6 @@
-import { IRouteSlugs, IRoute, ICategoryType } from "../types/constants";
+import { IRouteSlugs, IRoute } from "../types/constants";
 
-export const INITIAL_INFO = { info: [], type: 'heros' as ICategoryType };
+export const INITIAL_INFO = { info: [] };
 
 export const DICTIONARY: {[key: string]: string} = {
     name: 'Имя',
@@ -13,6 +13,8 @@ export const DICTIONARY: {[key: string]: string} = {
     type: 'Тип',
     dimension: 'Измерение',
 };
+
+export const BASE_FETCH_URL = ' https://rickandmortyapi.com/api';
 
 export const ROUTE_SLUGS: IRouteSlugs = {
     heros: 'Герои',
@@ -36,17 +38,17 @@ export const ROUTES: IRoute[] = [
     },
     {
         id: 2,
-        path: '/category/heros',
+        path: '/category/character',
         label: 'Герои',
     },
     {
         id: 3,
-        path: '/category/locations',
+        path: '/category/location',
         label: 'Локации',
     },
     {
         id: 4,
-        path: '/category/episodes',
+        path: '/category/episode',
         label: 'Эпизоды',
     },
 

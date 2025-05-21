@@ -1,17 +1,20 @@
+import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 import './App.css';
 
 import { INITIAL_ROUTES } from './constants';
 import { AuthProvider } from './context/AuthProvider';
 
-import MainPage from './pages/Main';
-import CategoryPage from './pages/Category';
-import DetailPage from './pages/Detail';
 import DefaultLayout from './layout/default/DefaultLayout';
-import NotFound from './pages/NotFound';
-
 import { PrivateRoute } from './components/PrivateRoute/PrivateRoute';
-import LoginPage from './pages/Login';
+import VLoader from './components/VLoader/VLoader';
+
+const MainPage = lazy(() => import('./pages/Main'));
+const CategoryPage = lazy(() => import('./pages/Category'));
+const DetailPage = lazy(() => import('./pages/Detail'));
+const LoginPage = lazy(() => import('./pages/Login'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+
 
 function App() {
   return (
@@ -24,7 +27,7 @@ function App() {
                 element={ <MainPage/> }
               />
               <Route 
-                path={INITIAL_ROUTES.category} 
+                path={INITIAL_ROUTES.category}
                 element={ <PrivateRoute><CategoryPage/></PrivateRoute> }
               />
               <Route 
@@ -39,7 +42,11 @@ function App() {
 
             <Route
                 path={INITIAL_ROUTES.login}
-                element={<LoginPage/>}
+                element={
+                  <Suspense fallback={<VLoader/>}>
+                    <LoginPage/>
+                  </Suspense>
+              }
             />
         </Routes>
       </AuthProvider>

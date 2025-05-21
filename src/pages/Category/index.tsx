@@ -1,64 +1,69 @@
-import { useCallback, useEffect, useState } from "react";
-
-import { useParams, useSearchParams } from "react-router";
-import { INITIAL_INFO, ROUTE_SLUGS } from "../../constants";
-import { CATEGORIES_DATA } from "../../data";
+import { useParams } from "react-router-dom";
+import { BASE_FETCH_URL, ROUTE_SLUGS } from "../../constants";
 
 import styles from './CategoryPage.module.css'
 import VCard from "../../components/VCard/VCard";
-import { ICategoryItem } from "../../types/constants";
+import { useFetch } from "../../hooks/useFetch";
+import { ICategory } from "../../types/constants";
+import VLoader from "../../components/VLoader/VLoader";
+import { useCallback, useEffect, useRef, useState } from "react";
+import ErrorBoundary from "../../components/ErrorBoundary/ErrorBoundary";
 
-const ORDERING_TYPES = {
-  asc: 'asc',
-  desc: 'desc',
-};
+const DEFAULT_PAGE_VALUE = 1;
 
 function CategoryPage() {
-  const [searchParams, setSearchParams] = useSearchParams({order: ORDERING_TYPES.desc});
-  const order = searchParams.get('order') || ORDERING_TYPES.desc;
-
   const { slug } = useParams();
-
-  const [sortOrder, setSortOrder] = useState<any>(order);
-  const [data, setData] = useState<ICategoryItem>(
-    slug && CATEGORIES_DATA[slug] 
-      ? CATEGORIES_DATA[slug]
-      : INITIAL_INFO
-  )
-
-  const sortByCreated = useCallback((isInitial: boolean = false, arr:ICategoryItem['info']) => {
-    let newOrder = sortOrder === ORDERING_TYPES.asc || isInitial
-      ? ORDERING_TYPES.desc 
-      : ORDERING_TYPES.asc;
-
-    setSortOrder(newOrder);
-
-    const sorted = [...arr].sort((a, b) => {
-      const aTime = new Date(a.created).getTime();
-      const bTime = new Date(b.created).getTime();
-
-      return newOrder === ORDERING_TYPES.asc ? aTime - bTime : bTime - aTime;
-    });
+  const observer = useRef<IntersectionObserver | null>(null);
   
-    setData(prev => ({
-      ...prev,
-      info: sorted
-    }));
+  const [params, setParams] = useState({ slug, pageNumber: DEFAULT_PAGE_VALUE })
 
-    setSearchParams({order: newOrder});
-  }, [sortOrder, setSearchParams]);
+  const {    
+    data,
+    isLoading,
+    hasMore,
+    sortByCreated,
+    clearData,
+  } = useFetch<ICategory>(`${BASE_FETCH_URL}/${params.slug}?page=${params.pageNumber}`, true);
+
+
+  const lastNodeRef = useCallback((node: HTMLDivElement | null) => {
+    if (isLoading) {
+      return;
+    }
+
+    if (observer.current) {
+      observer.current.disconnect();
+    }
+
+    observer.current = new IntersectionObserver((entries) => {
+      if(entries[0].isIntersecting && hasMore) {
+        setParams(prev => ({ ...prev, pageNumber: prev.pageNumber + 1 }));
+      }
+    })
+
+    if(node) {
+      observer.current.observe(node);
+    }
+  },[isLoading, hasMore])
+
+  const handleSort = useCallback(() => {
+    if (!data?.results) {
+      return;
+    }
+  
+    sortByCreated(data);
+  },[data, sortByCreated])
 
   useEffect(() => {
-    if (slug) {
-      sortByCreated(true, CATEGORIES_DATA[slug].info);
-    }
-  },[slug])
+      setParams({ slug, pageNumber: 1 });
+      clearData();
+  },[slug, clearData])
 
   return (
     <div className={styles.container}>
       <button
         className={styles.button} 
-        onClick={() => sortByCreated(false, data.info)}
+        onClick={() => handleSort()}
       >
           Отсортировать по дате создания
       </button>
@@ -66,13 +71,26 @@ function CategoryPage() {
             {slug ? ROUTE_SLUGS[slug] : 'Категория '}
         </h1>
         <div className={styles.wrapper}>
-          { data.info.map(item => (
-            <VCard
-                key={item.id}
-                type={data.type}
-                data={item}
-            />
-          ))}
+          { isLoading 
+            ? <VLoader/> 
+            : data?.results.map((item, index) => {
+              if(data?.results.length === index + 1) {
+                return (
+                  <div ref={lastNodeRef}>
+                      <ErrorBoundary>
+                        <VCard key={item.id} data={item}/>
+                      </ErrorBoundary>
+                  </div>
+                )
+              } else {
+                return (
+                  <ErrorBoundary>
+                    <VCard key={item.id} data={item}/>
+                  </ErrorBoundary>
+                )
+              }
+            })
+          }
         </div>
     </div>
   )
